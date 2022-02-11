@@ -1,0 +1,28 @@
+{
+  "general": {
+    "save": "salva",
+    "ok": "ok",
+    "dismiss": "annulla"
+  },
+  "login": {
+    "username": "nome utente",
+    "password": "password",
+    "login": "accedi"
+  },
+  "projects": {
+    "projects": "progetti",
+    "addProject": "nuovo progetto",
+    "status": "stato",
+    "name": "nome",
+    "tbd": "tbd",
+    "discovery": "discovery",
+    "inProgress": "in progress",
+    "startDate": "data di inizio",
+    "createProject": "crea progetto",
+    "editProject": "modifica progetto",
+    "projectNotFound": "progetto non trovato",
+    "confirmDelete": "sei sicuro di voler cancellare il progetto {{projectName}}?",
+    "errorDeletingProject": "non è stato possibile cancellare il progetto a causa di questo errore: {{errorMessage}}",
+    "errorLoadingProjects": "errore nel caricamento dei progetti"
+  }
+}

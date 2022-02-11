@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { User } from 'firebase/auth'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { initAuth } from './backend/init'
+import NotificationArea from './components/NotificationArea'
+import LoadingPage from './pages/LoadingPage'
+import LoginPage from './pages/LoginPage'
+import Routes from './Routes'
+import userActions from './store/user/actions'
+import { selectUserId } from './store/user/selectors'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const dispatch = useDispatch()
+
+  const userId = useSelector(selectUserId)
+
+  const [persistedUser, setPersistedUser] = useState<User | null | undefined>(undefined)
+
+  useEffect(() => {
+    initAuth.then((auth) => {
+      setPersistedUser(auth.currentUser)
+    }).catch(() => {
+      setPersistedUser(null)
+    })
+  }, [])
+
+  if (!userId && persistedUser) {
+    dispatch(userActions.setUser({ id: persistedUser.uid, username: persistedUser.providerData[0].uid }))
+  }
+
+  return <>
+    {!userId && persistedUser === undefined && <LoadingPage />}
+    {userId || persistedUser ? <Routes /> : <LoginPage />}
+    <NotificationArea />
+  </>
 }
 
 export default App;
