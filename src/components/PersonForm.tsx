@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import BackButton from '../components/BackButton'
 import { Id } from '../model/model'
 import { Person } from '../model/person'
+import { useGetProjectsQuery } from '../services/projects'
 import {
   Button, MenuItem, Select,
   TextField
@@ -56,6 +57,8 @@ type Props = {
 const PersonForm: React.FC<Props> = ({ person, onSubmit }) => {
   const { t } = useTranslation()
 
+  const { data } = useGetProjectsQuery()
+
   return (
     <Formik
       initialValues={person}
@@ -68,6 +71,13 @@ const PersonForm: React.FC<Props> = ({ person, onSubmit }) => {
           <Field as={RoleSelect} name="role" />
           <Field as={StatusSelect} name="status" />
           <Field as={TextField} name="externalCompany" label={t('persons.externalCompany')} />
+          {person.projects.map(({ projectId, allocation }) => (
+            <ul>
+              <li>
+
+              </li>
+            </ul>
+          ))}
 
           <Buttons>
             <BackButton />

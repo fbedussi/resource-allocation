@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Header from '../components/Header'
 import ProjectCard from '../components/ProjectCard'
+import { useDeleteProjectMutation, useGetProjectsQuery } from '../services/projects'
 import {
-	useDeleteProjectMutation,
-	useGetProjectsQuery,
-} from '../services/projects'
-import { selectUserId } from '../store/user/selectors'
-import {
-	Alert,
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	Fab,
+  Alert, Button, Dialog,
+  DialogActions, DialogContent, DialogContentText,
+  Fab
 } from '../styleguide'
 import { AddIcon } from '../styleguide/icons'
 import theme from '../styleguide/theme'
@@ -36,8 +27,7 @@ const Projects = styled.div`
 const ProjectsPage: React.FC = () => {
 	const { t } = useTranslation()
 
-	const userId = useSelector(selectUserId)
-	const projects = useGetProjectsQuery(userId)
+	const projects = useGetProjectsQuery()
 
 	const [deleteProject, deleteProjectResult] = useDeleteProjectMutation()
 

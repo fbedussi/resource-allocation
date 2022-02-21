@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Header from '../components/Header'
 import PersonCard from '../components/PersonCard'
-import ProjectCard from '../components/ProjectCard'
 import { useDeletePersonMutation, useGetPersonsQuery } from '../services/persons'
-import { useDeleteProjectMutation, useGetProjectsQuery } from '../services/projects'
-import { selectUserId } from '../store/user/selectors'
 import {
   Alert, Button, Dialog,
   DialogActions, DialogContent, DialogContentText,
@@ -31,8 +27,7 @@ const Persons = styled.div`
 const PersonsPage: React.FC = () => {
 	const { t } = useTranslation()
 
-	const userId = useSelector(selectUserId)
-	const persons = useGetPersonsQuery(userId)
+	const persons = useGetPersonsQuery()
 
 	const [deletePerson, deletePersonResult] = useDeletePersonMutation()
 

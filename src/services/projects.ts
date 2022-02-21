@@ -3,13 +3,12 @@ import {
   doc, getDocs, query,
   setDoc, where
 } from 'firebase/firestore'
-import { useSelector } from 'react-redux'
 
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { db } from '../backend/init'
-import { Id } from '../model/model'
+import { Id, RootState } from '../model/model'
 import { Person } from '../model/person'
 import { Project } from '../model/project'
 import { selectUserId } from '../store/user/selectors'
@@ -19,9 +18,12 @@ const COLLECTION_NAME = 'projects'
 export const projectsApi = createApi({
   reducerPath: 'projectsApi',
   tagTypes: [COLLECTION_NAME],
-  baseQuery: async <T>(query: T): Promise<QueryReturnValue<T, string, {}>> => {
+  baseQuery: async <T>(query: (userId: Id) => T, api: BaseQueryApi): Promise<QueryReturnValue<T, string, {}>> => {
+    const state = api.getState() as RootState
+    const userId = selectUserId(state)
+
     try {
-      const data = await query
+      const data = await query(userId)
       return { data }
     } catch (error: any) {
       return { error: error.toString() }
@@ -29,7 +31,7 @@ export const projectsApi = createApi({
   },
   endpoints: builder => ({
     getProjects: builder.query<Project[], string | void>({
-      query: async (userId: string) => {
+      query: () => async (userId: string) => {
         const q = query(
           collection(db, COLLECTION_NAME),
           where('userId', '==', userId),
@@ -60,14 +62,14 @@ export const projectsApi = createApi({
       Project,
       Omit<Project, 'id'> & { userId: string }
     >({
-      query: async project => {
+      query: project => async (userId: Id) => {
         const docRef = await addDoc(collection(db, COLLECTION_NAME), project)
         return { ...project, id: docRef.id }
       },
       invalidatesTags: [{ type: COLLECTION_NAME, id: 'LIST' }],
     }),
     editProject: builder.mutation<Project, Project>({
-      query: async project => {
+      query: project => async (userId: Id) => {
         try {
           await setDoc(doc(db, COLLECTION_NAME, project.id), project)
           return project
@@ -80,7 +82,7 @@ export const projectsApi = createApi({
       ],
     }),
     deleteProject: builder.mutation<true, Id>({
-      query: async projectId => {
+      query: projectId => async (userId: Id) => {
         try {
           await deleteDoc(doc(db, COLLECTION_NAME, projectId))
           return true
@@ -101,9 +103,7 @@ export const {
 } = projectsApi
 
 export const useGetProjectQuery = (projectId: Id) => {
-  const userId = useSelector(selectUserId)
-
-  const { project } = useGetProjectsQuery(userId, {
+  const { project } = useGetProjectsQuery(undefined, {
     selectFromResult: ({ data }) => {
       return {
         project: data?.find(({ id }) => id === projectId),
@@ -114,9 +114,7 @@ export const useGetProjectQuery = (projectId: Id) => {
 }
 
 export const useGetPersonProjectsQuery = (person: Person) => {
-  const userId = useSelector(selectUserId)
-
-  const { projects } = useGetProjectsQuery(userId, {
+  const { projects } = projectsApi.useGetProjectsQuery(undefined, {
     selectFromResult: ({ data }) => {
       return {
         projects: data?.filter(({ id }) => person.projects.some(({ projectId }) => projectId === id)),

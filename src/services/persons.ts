@@ -5,11 +5,11 @@ import {
 } from 'firebase/firestore'
 import { useSelector } from 'react-redux'
 
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { db } from '../backend/init'
-import { Id } from '../model/model'
+import { Id, RootState } from '../model/model'
 import { Person } from '../model/person'
 import { selectUserId } from '../store/user/selectors'
 
@@ -18,9 +18,12 @@ const COLLECTION_NAME = 'persons'
 export const personsApi = createApi({
   reducerPath: 'personsApi',
   tagTypes: [COLLECTION_NAME],
-  baseQuery: async <T>(query: T): Promise<QueryReturnValue<T, string, {}>> => {
+  baseQuery: async <T>(query: (userId: Id) => T, api: BaseQueryApi): Promise<QueryReturnValue<T, string, {}>> => {
+    const state = api.getState() as RootState
+    const userId = selectUserId(state)
+
     try {
-      const data = await query
+      const data = await query(userId)
       return { data }
     } catch (error: any) {
       return { error: error.toString() }
@@ -28,7 +31,7 @@ export const personsApi = createApi({
   },
   endpoints: builder => ({
     getPersons: builder.query<Person[], string | void>({
-      query: async (userId: string) => {
+      query: () => async (userId: string) => {
         const q = query(
           collection(db, COLLECTION_NAME),
           where('userId', '==', userId),
@@ -42,9 +45,6 @@ export const personsApi = createApi({
         })
         return persons
       },
-      // onQueryStarted(userId) {
-      //   projectsApi.endpoints.getProjects.initiate(userId)
-      // },
       providesTags: result =>
         // is result available?
         result
@@ -62,14 +62,14 @@ export const personsApi = createApi({
       Person,
       Person & { userId: string }
     >({
-      query: async person => {
+      query: person => async (userId: Id) => {
         const docRef = await addDoc(collection(db, COLLECTION_NAME), { ...person, id: undefined })
         return { ...person, id: docRef.id }
       },
       invalidatesTags: [{ type: COLLECTION_NAME, id: 'LIST' }],
     }),
     editPerson: builder.mutation<Person, Person>({
-      query: async project => {
+      query: project => async (userId: Id) => {
         try {
           await setDoc(doc(db, COLLECTION_NAME, project.id), project)
           return project
@@ -82,7 +82,7 @@ export const personsApi = createApi({
       ],
     }),
     deletePerson: builder.mutation<true, Id>({
-      query: async id => {
+      query: id => async (userId: Id) => {
         try {
           await deleteDoc(doc(db, COLLECTION_NAME, id))
           return true
@@ -103,9 +103,7 @@ export const {
 } = personsApi
 
 export const useGetPersonQuery = (personId: Id) => {
-  const userId = useSelector(selectUserId)
-
-  const { project } = useGetPersonsQuery(userId, {
+  const { project } = useGetPersonsQuery(undefined, {
     selectFromResult: ({ data }) => ({
       project: data?.find(({ id }) => id === personId),
     }),
