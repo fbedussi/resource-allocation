@@ -3,7 +3,6 @@ import {
   doc, getDocs, query,
   setDoc, where
 } from 'firebase/firestore'
-import { useSelector } from 'react-redux'
 
 import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { createApi } from '@reduxjs/toolkit/query/react'
@@ -58,12 +57,11 @@ export const personsApi = createApi({
           : // an error occurred, but we still want to refetch this query when `{ type: 'projects', id: 'LIST' }` is invalidated
           [{ type: COLLECTION_NAME, id: 'LIST' }],
     }),
-    addPerson: builder.mutation<
-      Person,
-      Person & { userId: string }
-    >({
+    addPerson: builder.mutation<Person, Person>({
       query: person => async (userId: Id) => {
-        const docRef = await addDoc(collection(db, COLLECTION_NAME), { ...person, id: undefined })
+        const personNoId: Omit<Person, 'id'> & { id?: string } = { ...person }
+        delete personNoId.id
+        const docRef = await addDoc(collection(db, COLLECTION_NAME), { ...personNoId, userId })
         return { ...person, id: docRef.id }
       },
       invalidatesTags: [{ type: COLLECTION_NAME, id: 'LIST' }],

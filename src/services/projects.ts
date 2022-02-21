@@ -60,10 +60,12 @@ export const projectsApi = createApi({
     }),
     addProject: builder.mutation<
       Project,
-      Omit<Project, 'id'> & { userId: string }
+      Project
     >({
       query: project => async (userId: Id) => {
-        const docRef = await addDoc(collection(db, COLLECTION_NAME), project)
+        const projectNoId: Omit<Project, 'id'> & { id?: string } = { ...project }
+        delete projectNoId.id
+        const docRef = await addDoc(collection(db, COLLECTION_NAME), { ...projectNoId, userId })
         return { ...project, id: docRef.id }
       },
       invalidatesTags: [{ type: COLLECTION_NAME, id: 'LIST' }],

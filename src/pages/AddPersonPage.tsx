@@ -36,7 +36,7 @@ const AddPersonPage: React.FC = () => {
 			<Container>
 				<PersonForm
 					person={emptyPerson}
-					onSubmit={person => dispatch(addPerson({ ...person, userId }))}
+					onSubmit={person => dispatch(addPerson(person))}
 				/>
 			</Container>
 		</div>

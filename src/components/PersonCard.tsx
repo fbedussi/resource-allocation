@@ -67,7 +67,7 @@ const PersonCard: React.FC<Props> = ({ person, setDeleteAlert }) => {
 				/>
 				<ul>
 					{projects?.map(project =>
-						<li>
+						<li key={project.id}>
 							<Typography sx={{ mb: 1.5 }} color="text.secondary">
 								{project.name} {person.projects
 									.find(({ projectId }) => projectId === project.id)?.allocation}%

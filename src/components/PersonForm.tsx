@@ -99,16 +99,18 @@ const PersonForm: React.FC<Props> = ({ person, onSubmit }) => {
               </IconButton>
             </ProjectsHeader>
             <FieldArray name="projects">
-              {({ remove, push }) => values.projects.map(({ projectId, allocation }, index) => {
+              {({ remove, push }) => {
                 pushToProjectsRef.current = push
-                return (
-                  <ul key={projectId}>
-                    <li>
-                      <ProjectCard projectId={projectId} allocation={allocation} onDelete={() => remove(index)} hideEditButton={true} />
-                    </li>
-                  </ul>
-                )
-              })}
+                return values.projects.map(({ projectId, allocation }, index) => {
+                  return (
+                    <ul key={projectId}>
+                      <li>
+                        <ProjectCard projectId={projectId} allocation={allocation} onDelete={() => remove(index)} hideEditButton={true} />
+                      </li>
+                    </ul>
+                  )
+                })
+              }}
             </FieldArray>
 
             <Buttons>
