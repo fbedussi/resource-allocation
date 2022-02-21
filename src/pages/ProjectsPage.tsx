@@ -55,8 +55,8 @@ const ProjectsPage: React.FC = () => {
 				{projects.data?.map(project => (
 					<ProjectCard
 						key={project.id}
-						project={project}
-						setDeleteAlert={setDeleteAlert}
+						projectId={project.id}
+						onDelete={setDeleteAlert}
 					/>
 				))}
 			</Projects>

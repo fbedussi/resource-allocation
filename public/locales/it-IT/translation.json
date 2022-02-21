@@ -46,6 +46,9 @@
 		"projects": "progetti",
 		"externalCompany": "società esterna",
 		"editPerson": "modifica persona",
-		"personNotFound": "persona non trovata"
+		"personNotFound": "persona non trovata",
+		"allocation": "allocazione",
+		"addPersonToProject": "Asseguna uno o più progetti a {{personName}}",
+		"noAvailableProjects": "non mi sono progetti disponibili"
 	}
 }

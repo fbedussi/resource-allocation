@@ -5,12 +5,10 @@ import styled from 'styled-components'
 
 import { Id } from '../model/model'
 import { Project } from '../model/project'
+import { useGetProjectQuery } from '../services/projects'
 import {
-	Card,
-	CardActions,
-	CardContent,
-	IconButton,
-	Typography,
+  Card, CardActions, CardContent,
+  IconButton, Typography
 } from '../styleguide'
 import { DeleteIcon, EditIcon } from '../styleguide/icons'
 
@@ -19,12 +17,16 @@ const Actions = styled(CardActions)`
 `
 
 type Props = {
-	project: Project
-	setDeleteAlert: (projectId: Id) => void
+	projectId: Id
+	onDelete: (projectId: Id) => void
+	allocation?: number
+	hideEditButton?: boolean
 }
 
-const ProjectCard: React.FC<Props> = ({ project, setDeleteAlert }) => {
-	return (
+const ProjectCard: React.FC<Props> = ({ projectId, onDelete, allocation, hideEditButton }) => {
+	const project = useGetProjectQuery(projectId)
+
+	return !project ? <Card /> : (
 		<Card>
 			<CardContent>
 				<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -36,15 +38,15 @@ const ProjectCard: React.FC<Props> = ({ project, setDeleteAlert }) => {
 				<Typography sx={{ mb: 1.5 }} color="text.secondary">
 					{format(new Date(project.startDate), 'd MMMM yyyy')}
 				</Typography>
-				<Typography variant="body2"></Typography>
+				{allocation && <Typography variant="body2">{allocation}%</Typography>}
 			</CardContent>
 			<Actions>
-				<Link to={`/project/edit/${project.id}`}>
+				{!hideEditButton && <Link to={`/project/edit/${project.id}`}>
 					<IconButton size="small">
 						<EditIcon />
 					</IconButton>
-				</Link>
-				<IconButton onClick={() => setDeleteAlert(project.id)} size="small">
+				</Link>}
+				<IconButton onClick={() => onDelete(project.id)} size="small">
 					<DeleteIcon />
 				</IconButton>
 			</Actions>
