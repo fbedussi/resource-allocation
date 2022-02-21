@@ -1,28 +1,51 @@
 {
-  "general": {
-    "save": "salva",
-    "ok": "ok",
-    "dismiss": "annulla"
-  },
-  "login": {
-    "username": "nome utente",
-    "password": "password",
-    "login": "accedi"
-  },
-  "projects": {
-    "projects": "progetti",
-    "addProject": "nuovo progetto",
-    "status": "stato",
-    "name": "nome",
-    "tbd": "tbd",
-    "discovery": "discovery",
-    "inProgress": "in progress",
-    "startDate": "data di inizio",
-    "createProject": "crea progetto",
-    "editProject": "modifica progetto",
-    "projectNotFound": "progetto non trovato",
-    "confirmDelete": "sei sicuro di voler cancellare il progetto {{projectName}}?",
-    "errorDeletingProject": "non è stato possibile cancellare il progetto a causa di questo errore: {{errorMessage}}",
-    "errorLoadingProjects": "errore nel caricamento dei progetti"
-  }
+	"general": {
+		"save": "salva",
+		"ok": "ok",
+		"dismiss": "annulla",
+		"back": "indietro"
+	},
+	"login": {
+		"username": "nome utente",
+		"password": "password",
+		"login": "accedi"
+	},
+	"projects": {
+		"projects": "progetti",
+		"addProject": "nuovo progetto",
+		"status": "stato",
+		"name": "nome",
+		"tbd": "tbd",
+		"discovery": "discovery",
+		"inProgress": "in progress",
+		"startDate": "data di inizio",
+		"createProject": "crea progetto",
+		"editProject": "modifica progetto",
+		"projectNotFound": "progetto non trovato",
+		"confirmDelete": "sei sicuro di voler cancellare il progetto {{projectName}}?",
+		"errorDeletingProject": "non è stato possibile cancellare il progetto a causa di questo errore: {{errorMessage}}",
+		"saveError": "non è stato possibile salvare il progetto a causa di questo errore: {{errorMessage}}",
+		"errorLoadingProjects": "errore nel caricamento dei progetti"
+	},
+	"persons": {
+		"persons": "persone",
+		"errorLoadingPersons": "errore nel caricamento delle persone",
+		"confirmDelete": "sei sicuro di voler cancellare {{name}} {{surname}}?",
+		"errorDeletingPerson": "non è stato possibile cancellare la persona a causa di questo errore: {{errorMessage}}",
+		"addPerson": "nuova persona",
+		"name": "nome",
+		"surname": "cognome",
+		"status": "stato",
+		"incoming": "in ingresso",
+		"onduty": "operativo",
+		"outgoing": "in uscita",
+		"resigned": "dimesso",
+		"role": "ruolo",
+		"developer": "sviluppatore",
+		"projectManager": "project manager",
+		"projects": "progetti",
+		"externalCompany": "società esterna",
+		"editPerson": "modifica persona",
+		"personNotFound": "persona non trovata"
+	}
 }

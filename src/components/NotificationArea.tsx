@@ -7,18 +7,37 @@ import { selectNotifications } from '../store/notifications/selectors'
 import { Alert, Snackbar } from '../styleguide'
 
 function App() {
-  const { t } = useTranslation()
-  const notifications = useSelector(selectNotifications)
+	const { t } = useTranslation()
+	const notifications = useSelector(selectNotifications)
 
-  const dispatch = useDispatch()
+	const dispatch = useDispatch()
 
-  return <>
-    {notifications.map(({ id, type, messageLabelKey, interpolationPayload, autoClose = true }) => (
-      <Snackbar key={id} open={true} autoHideDuration={autoClose ? 6000 : undefined} onClose={() => dispatch(notificationsActions.removeNotification(id))}>
-        <Alert severity={type}>{t(messageLabelKey, interpolationPayload)}</Alert>
-      </Snackbar>
-    ))}
-  </>
+	return (
+		<>
+			{notifications.map(
+				({
+					id,
+					type,
+					messageLabelKey,
+					interpolationPayload,
+					autoClose = true,
+				}) => (
+					<Snackbar
+						key={id}
+						open={true}
+						autoHideDuration={autoClose ? 6000 : undefined}
+						onClose={() =>
+							dispatch(notificationsActions.removeNotification(id))
+						}
+					>
+						<Alert severity={type}>
+							{t(messageLabelKey, interpolationPayload)}
+						</Alert>
+					</Snackbar>
+				),
+			)}
+		</>
+	)
 }
 
-export default App;
+export default App

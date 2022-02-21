@@ -3,17 +3,23 @@ import {
   doc, getDocs, query,
   setDoc, where
 } from 'firebase/firestore'
+import { useSelector } from 'react-redux'
 
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { db } from '../backend/init'
 import { Id } from '../model/model'
+import { Person } from '../model/person'
 import { Project } from '../model/project'
+import { selectUserId } from '../store/user/selectors'
+
+const COLLECTION_NAME = 'projects'
 
 export const projectsApi = createApi({
   reducerPath: 'projectsApi',
-  tagTypes: ['projects'],
-  baseQuery: async (query) => {
+  tagTypes: [COLLECTION_NAME],
+  baseQuery: async <T>(query: T): Promise<QueryReturnValue<T, string, {}>> => {
     try {
       const data = await query
       return { data }
@@ -21,59 +27,69 @@ export const projectsApi = createApi({
       return { error: error.toString() }
     }
   },
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getProjects: builder.query<Project[], string | void>({
       query: async (userId: string) => {
-        const q = query(collection(db, "projects"), where("userId", "==", userId));
+        const q = query(
+          collection(db, COLLECTION_NAME),
+          where('userId', '==', userId),
+        )
 
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q)
         let projects: Project[] = []
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           const project = doc.data() as Project
           projects.push({ ...project, id: doc.id })
-        });
+        })
         return projects
       },
-      providesTags: (result) =>
+      providesTags: result =>
         // is result available?
         result
           ? // successful query
           [
-            ...result.map(({ id }) => ({ type: 'projects', id } as const)),
-            { type: 'projects', id: 'LIST' },
+            ...result.map(
+              ({ id }) => ({ type: COLLECTION_NAME, id } as const),
+            ),
+            { type: COLLECTION_NAME, id: 'LIST' },
           ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'projects', id: 'LIST' }` is invalidated
-          [{ type: 'projects', id: 'LIST' }],
+          [{ type: COLLECTION_NAME, id: 'LIST' }],
     }),
-    addProject: builder.mutation<Project, Omit<Project, 'id'> & { userId: string }>({
-      query: async (project) => {
-        const docRef = await addDoc(collection(db, "projects"), project)
+    addProject: builder.mutation<
+      Project,
+      Omit<Project, 'id'> & { userId: string }
+    >({
+      query: async project => {
+        const docRef = await addDoc(collection(db, COLLECTION_NAME), project)
         return { ...project, id: docRef.id }
       },
-      invalidatesTags: [{ type: 'projects', id: 'LIST' }],
+      invalidatesTags: [{ type: COLLECTION_NAME, id: 'LIST' }],
     }),
     editProject: builder.mutation<Project, Project>({
-      query: async (project) => {
+      query: async project => {
         try {
-          await setDoc(doc(db, "projects", project.id), project)
+          await setDoc(doc(db, COLLECTION_NAME, project.id), project)
           return project
         } catch (e) {
-          throw e;
+          throw e
         }
       },
-      invalidatesTags: (result, error, { id }) => [{ type: 'projects', id }],
+      invalidatesTags: (result, error, { id }) => [
+        { type: COLLECTION_NAME, id },
+      ],
     }),
     deleteProject: builder.mutation<true, Id>({
-      query: async (projectId) => {
+      query: async projectId => {
         try {
-          await deleteDoc(doc(db, "projects", projectId))
+          await deleteDoc(doc(db, COLLECTION_NAME, projectId))
           return true
         } catch (e) {
-          throw e;
+          throw e
         }
       },
-      invalidatesTags: (result, error, id) => [{ type: 'projects', id }],
-    })
+      invalidatesTags: (result, error, id) => [{ type: COLLECTION_NAME, id }],
+    }),
   }),
 })
 
@@ -81,14 +97,38 @@ export const {
   useGetProjectsQuery,
   useAddProjectMutation,
   useEditProjectMutation,
-  useDeleteProjectMutation
+  useDeleteProjectMutation,
 } = projectsApi
 
-export const useGetProjectQuery = (projectId: Id, userId: Id) => {
+export const useGetProjectQuery = (projectId: Id) => {
+  const userId = useSelector(selectUserId)
+
   const { project } = useGetProjectsQuery(userId, {
-    selectFromResult: ({ data }) => ({
-      project: data?.find(({ id }) => id === projectId),
-    }),
+    selectFromResult: ({ data }) => {
+      return {
+        project: data?.find(({ id }) => id === projectId),
+      }
+    },
   })
   return project
 }
+
+export const useGetPersonProjectsQuery = (person: Person) => {
+  const userId = useSelector(selectUserId)
+
+  const { projects } = useGetProjectsQuery(userId, {
+    selectFromResult: ({ data }) => {
+      return {
+        projects: data?.filter(({ id }) => person.projects.some(({ projectId }) => projectId === id)),
+      }
+    },
+  })
+  return projects
+}
+
+// export const selectProjectsResult = projectsApi.endpoints.getProjects.select()
+
+// export const selectAllProjects = createSelector(
+//   selectProjectsResult,
+//   result => result?.data ?? []
+// )

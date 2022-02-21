@@ -11,29 +11,40 @@ import userActions from './store/user/actions'
 import { selectUserId } from './store/user/selectors'
 
 function App() {
-  const dispatch = useDispatch()
+	const dispatch = useDispatch()
 
-  const userId = useSelector(selectUserId)
+	const userId = useSelector(selectUserId)
 
-  const [persistedUser, setPersistedUser] = useState<User | null | undefined>(undefined)
+	const [persistedUser, setPersistedUser] = useState<User | null | undefined>(
+		undefined,
+	)
 
-  useEffect(() => {
-    initAuth.then((auth) => {
-      setPersistedUser(auth.currentUser)
-    }).catch(() => {
-      setPersistedUser(null)
-    })
-  }, [])
+	useEffect(() => {
+		initAuth
+			.then(auth => {
+				setPersistedUser(auth.currentUser)
+			})
+			.catch(() => {
+				setPersistedUser(null)
+			})
+	}, [])
 
-  if (!userId && persistedUser) {
-    dispatch(userActions.setUser({ id: persistedUser.uid, username: persistedUser.providerData[0].uid }))
-  }
+	if (!userId && persistedUser) {
+		dispatch(
+			userActions.setUser({
+				id: persistedUser.uid,
+				username: persistedUser.providerData[0].uid,
+			}),
+		)
+	}
 
-  return <>
-    {!userId && persistedUser === undefined && <LoadingPage />}
-    {userId || persistedUser ? <Routes /> : <LoginPage />}
-    <NotificationArea />
-  </>
+	return (
+		<>
+			{!userId && persistedUser === undefined && <LoadingPage />}
+			{userId || persistedUser ? <Routes /> : <LoginPage />}
+			<NotificationArea />
+		</>
+	)
 }
 
-export default App;
+export default App

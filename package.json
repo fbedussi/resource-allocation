@@ -27,6 +27,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.15.4",
+    "react-minimal-pie-chart": "^8.2.0",
     "react-redux": "^7.2.6",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
@@ -61,7 +62,8 @@
     ]
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.22"
+    "@types/styled-components": "^5.1.22",
+    "prettier": "2.5.1"
   },
   "alias": {
     "@mui/styled-engine": "@mui/styled-engine-sc"

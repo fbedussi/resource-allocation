@@ -5,26 +5,21 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Header from '../components/Header'
+import PersonCard from '../components/PersonCard'
 import ProjectCard from '../components/ProjectCard'
-import {
-	useDeleteProjectMutation,
-	useGetProjectsQuery,
-} from '../services/projects'
+import { useDeletePersonMutation, useGetPersonsQuery } from '../services/persons'
+import { useDeleteProjectMutation, useGetProjectsQuery } from '../services/projects'
 import { selectUserId } from '../store/user/selectors'
 import {
-	Alert,
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	Fab,
+  Alert, Button, Dialog,
+  DialogActions, DialogContent, DialogContentText,
+  Fab
 } from '../styleguide'
 import { AddIcon } from '../styleguide/icons'
 import theme from '../styleguide/theme'
 import LoadingPage from './LoadingPage'
 
-const Projects = styled.div`
+const Persons = styled.div`
 	max-width: 1000px;
 	padding: ${theme.spacing(2)};
 	gap: ${theme.spacing(1)};
@@ -33,13 +28,13 @@ const Projects = styled.div`
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 `
 
-const ProjectsPage: React.FC = () => {
+const PersonsPage: React.FC = () => {
 	const { t } = useTranslation()
 
 	const userId = useSelector(selectUserId)
-	const projects = useGetProjectsQuery(userId)
+	const persons = useGetPersonsQuery(userId)
 
-	const [deleteProject, deleteProjectResult] = useDeleteProjectMutation()
+	const [deletePerson, deletePersonResult] = useDeletePersonMutation()
 
 	const navigate = useNavigate()
 
@@ -47,40 +42,42 @@ const ProjectsPage: React.FC = () => {
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('')
 
 	useEffect(() => {
-		if (deleteProjectResult.status === 'rejected') {
-			setDeleteErrorMessage(deleteProjectResult.error.toString())
+		if (deletePersonResult.status === 'rejected') {
+			setDeleteErrorMessage(deletePersonResult.error.toString())
 		}
-	}, [deleteProjectResult.status, deleteProjectResult.error])
+	}, [deletePersonResult.status, deletePersonResult.error])
 
 	return (
 		<>
-			<Header title={t('projects.projects')} />
+			<Header title={t('persons.persons')} />
 
-			{projects.isLoading && <LoadingPage />}
+			{persons.isLoading && <LoadingPage />}
 
-			<Projects>
-				{projects.error && (
-					<Alert severity="error">{t('projects.errorLoadingProjects')}</Alert>
+			<Persons>
+				{persons.error && (
+					<Alert severity="error">{t('persons.errorLoadingPersons')}</Alert>
 				)}
-				{projects.data?.map(project => (
-					<ProjectCard
-						key={project.id}
-						project={project}
+				{persons.data?.map(person => (
+					<PersonCard
+						key={person.id}
+						person={person}
 						setDeleteAlert={setDeleteAlert}
 					/>
 				))}
-			</Projects>
+			</Persons>
 
-			<Fab color="primary" onClick={() => navigate('/project/add')}>
+			<Fab color="primary" onClick={() => navigate('/persons/add')}>
 				<AddIcon />
 			</Fab>
 
 			<Dialog open={!!deleteAlert} onClose={() => setDeleteAlert('')}>
 				<DialogContent>
 					<DialogContentText>
-						{t('projects.confirmDelete', {
-							projectName: projects.data?.find(({ id }) => id === deleteAlert)
+						{t('persons.confirmDelete', {
+							name: persons.data?.find(({ id }) => id === deleteAlert)
 								?.name,
+							surnname: persons.data?.find(({ id }) => id === deleteAlert)
+								?.surname,
 						})}
 					</DialogContentText>
 				</DialogContent>
@@ -90,7 +87,7 @@ const ProjectsPage: React.FC = () => {
 					</Button>
 					<Button
 						onClick={() => {
-							deleteProject(deleteAlert)
+							deletePerson(deleteAlert)
 							setDeleteAlert('')
 						}}
 						autoFocus
@@ -106,7 +103,7 @@ const ProjectsPage: React.FC = () => {
 			>
 				<DialogContent>
 					<DialogContentText>
-						{t('projects.errorDeletingProject', {
+						{t('persons.errorDeletingPerson', {
 							errorMessage: deleteErrorMessage,
 						})}
 					</DialogContentText>
@@ -121,4 +118,4 @@ const ProjectsPage: React.FC = () => {
 	)
 }
 
-export default ProjectsPage
+export default PersonsPage

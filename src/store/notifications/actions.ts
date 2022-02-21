@@ -1,7 +1,7 @@
 import { slice } from './slice'
 
 const notificationsActions = {
-  ...slice.actions,
+	...slice.actions,
 }
 
 export default notificationsActions

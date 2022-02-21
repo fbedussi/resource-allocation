@@ -1,5 +1,5 @@
 export * from '@mui/material'
-export { LocalizationProvider } from './LocalizationProvider';
+export { LocalizationProvider } from './LocalizationProvider'
 export { LoadingButton } from '@mui/lab'
 export { Container } from './Container'
 export { Fab } from './Fab'
