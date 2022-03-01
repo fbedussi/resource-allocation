@@ -25,7 +25,9 @@
 		"confirmDelete": "sei sicuro di voler cancellare il progetto {{projectName}}?",
 		"errorDeletingProject": "non è stato possibile cancellare il progetto a causa di questo errore: {{errorMessage}}",
 		"saveError": "non è stato possibile salvare il progetto a causa di questo errore: {{errorMessage}}",
-		"errorLoadingProjects": "errore nel caricamento dei progetti"
+		"errorLoadingProjects": "errore nel caricamento dei progetti",
+		"developers": "sviluppatori",
+		"projectManagers": "project manager"
 	},
 	"persons": {
 		"persons": "persone",

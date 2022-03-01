@@ -5,12 +5,8 @@ import styled from 'styled-components'
 
 import Header from '../components/Header'
 import PersonCard from '../components/PersonCard'
-import { useDeletePersonMutation, useGetPersonsQuery } from '../services/persons'
-import {
-  Alert, Button, Dialog,
-  DialogActions, DialogContent, DialogContentText,
-  Fab
-} from '../styleguide'
+import { useGetPersonsQuery } from '../services/persons'
+import { Alert, Fab } from '../styleguide'
 import { AddIcon } from '../styleguide/icons'
 import theme from '../styleguide/theme'
 import LoadingPage from './LoadingPage'
@@ -29,18 +25,7 @@ const PersonsPage: React.FC = () => {
 
 	const persons = useGetPersonsQuery()
 
-	const [deletePerson, deletePersonResult] = useDeletePersonMutation()
-
 	const navigate = useNavigate()
-
-	const [deleteAlert, setDeleteAlert] = useState('')
-	const [deleteErrorMessage, setDeleteErrorMessage] = useState('')
-
-	useEffect(() => {
-		if (deletePersonResult.status === 'rejected') {
-			setDeleteErrorMessage(deletePersonResult.error.toString())
-		}
-	}, [deletePersonResult.status, deletePersonResult.error])
 
 	return (
 		<>
@@ -55,8 +40,7 @@ const PersonsPage: React.FC = () => {
 				{persons.data?.map(person => (
 					<PersonCard
 						key={person.id}
-						person={person}
-						setDeleteAlert={setDeleteAlert}
+						personId={person.id}
 					/>
 				))}
 			</Persons>
@@ -64,51 +48,6 @@ const PersonsPage: React.FC = () => {
 			<Fab color="primary" onClick={() => navigate('/persons/add')}>
 				<AddIcon />
 			</Fab>
-
-			<Dialog open={!!deleteAlert} onClose={() => setDeleteAlert('')}>
-				<DialogContent>
-					<DialogContentText>
-						{t('persons.confirmDelete', {
-							name: persons.data?.find(({ id }) => id === deleteAlert)
-								?.name,
-							surnname: persons.data?.find(({ id }) => id === deleteAlert)
-								?.surname,
-						})}
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setDeleteAlert('')}>
-						{t('general.dismiss')}
-					</Button>
-					<Button
-						onClick={() => {
-							deletePerson(deleteAlert)
-							setDeleteAlert('')
-						}}
-						autoFocus
-					>
-						{t('general.ok')}
-					</Button>
-				</DialogActions>
-			</Dialog>
-
-			<Dialog
-				open={!!deleteErrorMessage}
-				onClose={() => setDeleteErrorMessage('')}
-			>
-				<DialogContent>
-					<DialogContentText>
-						{t('persons.errorDeletingPerson', {
-							errorMessage: deleteErrorMessage,
-						})}
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button autoFocus onClick={() => setDeleteErrorMessage('')}>
-						{t('general.ok')}
-					</Button>
-				</DialogActions>
-			</Dialog>
 		</>
 	)
 }

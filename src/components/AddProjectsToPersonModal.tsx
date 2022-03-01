@@ -1,7 +1,5 @@
-import { Form } from 'formik'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
 
 import { Id } from '../model/model'
 import { Person } from '../model/person'
@@ -9,8 +7,7 @@ import { useGetProjectsQuery } from '../services/projects'
 import {
   Alert, Button, Dialog,
   DialogActions, DialogContent, DialogTitle,
-  InputLabel, List, MenuItem,
-  Select
+  List
 } from '../styleguide'
 import theme from '../styleguide/theme'
 import AddProjectRow from './AddProjectRow'

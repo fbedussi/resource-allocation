@@ -115,11 +115,12 @@ export const useGetProjectQuery = (projectId: Id) => {
   return project
 }
 
-export const useGetPersonProjectsQuery = (person: Person) => {
+export const useGetPersonProjectsQuery = (person?: Person) => {
   const { projects } = projectsApi.useGetProjectsQuery(undefined, {
+    skip: !person,
     selectFromResult: ({ data }) => {
       return {
-        projects: data?.filter(({ id }) => person.projects.some(({ projectId }) => projectId === id)),
+        projects: data?.filter(({ id }) => person?.projects.some(({ projectId }) => projectId === id)),
       }
     },
   })

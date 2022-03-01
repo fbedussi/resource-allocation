@@ -9,7 +9,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { db } from '../backend/init'
 import { Id, RootState } from '../model/model'
-import { Person } from '../model/person'
+import { Person, Role } from '../model/person'
 import { selectUserId } from '../store/user/selectors'
 
 const COLLECTION_NAME = 'persons'
@@ -107,6 +107,17 @@ export const useGetPersonQuery = (personId: Id) => {
     }),
   })
   return project
+}
+
+export const useGetProjectPersonsQuery = (projectId: Id, role?: Role) => {
+  const { persons } = personsApi.useGetPersonsQuery(undefined, {
+    selectFromResult: ({ data }) => {
+      return {
+        persons: data?.filter(person => person.projects.some(personsProject => personsProject.projectId === projectId) && role ? person.role === role : true),
+      }
+    },
+  })
+  return persons
 }
 
 // export const selectPersonsResult = personsApi.endpoints.getPersons.select()
