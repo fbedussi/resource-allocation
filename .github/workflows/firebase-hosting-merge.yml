@@ -11,11 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     steps:
-      - uses: actions/checkout@v2
-      - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESOURCE_ALLOCATION_481D9 }}'
-          channelId: live
-          projectId: resource-allocation-481d9
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: npm ci && npm run build
+      env:
+          REACT_APP_apiKey: '${{ secrets.REACT_APP_APIKEY }}'
+          REACT_APP_authDomain: '${{ secrets.REACT_APP_AUTHDOMAIN }}'
+          REACT_APP_projectId: '${{ secrets.REACT_APP_PROJECTID }}'
+          REACT_APP_storageBucket: '${{ secrets.REACT_APP_STORAGEBUCKET }}'
+          REACT_APP_messagingSenderId: '${{ secrets.REACT_APP_MESSAGINGSENDERID }}'
+          REACT_APP_appId: '${{ secrets.REACT_APP_APPID }}'
+    - name: Deploy
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESOURCE_ALLOCATION_481D9 }}'
+        channelId: live
+        projectId: resource-allocation-481d9
+        
