@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Id } from '../model/model'
+import { useGetCompanyQuery } from '../services/companies'
 import { useDeletePersonMutation, useGetPersonQuery } from '../services/persons'
 import { useGetPersonProjectsQuery } from '../services/projects'
 import {
@@ -71,6 +72,8 @@ const PersonCard: React.FC<Props> = ({ personId }) => {
 
 	const closeProjectDialog = () => setSelectedProjectId('')
 
+	const externalCompany = useGetCompanyQuery(person?.externalCompanyId || '')
+
 	return (
 		<>
 			<Card>
@@ -104,7 +107,7 @@ const PersonCard: React.FC<Props> = ({ personId }) => {
 								} />
 						)}
 					</ChipRow>
-					{!!person?.externalCompany && <Typography variant="body2">{person?.externalCompany}</Typography>}
+					{!!externalCompany && <Typography variant="body2">{externalCompany.name}</Typography>}
 				</CardContent>
 				<Actions>
 					<Link to={`/person/edit/${personId}`}>

@@ -11,5 +11,5 @@ export type Person = {
   role: Role
   projects: { projectId: Id, allocation: number }[]
   status: Status
-  externalCompany?: string
+  externalCompanyId?: Id
 }

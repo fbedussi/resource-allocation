@@ -7,7 +7,9 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import BackButton from '../components/BackButton'
+import { Company } from '../model/company'
 import { Person } from '../model/person'
+import { useGetCompaniesQuery } from '../services/companies'
 import {
   Button, IconButton, InputLabel,
   MenuItem, Select, TextField
@@ -37,6 +39,16 @@ const StatusSelect: React.FC = props => {
       <MenuItem value="onduty">{t('persons.onduty')}</MenuItem>
       <MenuItem value="outgoing">{t('persons.outgoing')}</MenuItem>
       <MenuItem value="resigned">{t('persons.resigned')}</MenuItem>
+    </Select>
+  )
+}
+
+const CompaniesSelect: React.FC<{ companies: Company[] }> = props => {
+  const { t } = useTranslation()
+
+  return (
+    <Select {...props} label={t('persons.status')}>
+      {props.companies.map(company => <MenuItem key={company.id} value={company.id}>{company.name}</MenuItem>)}
     </Select>
   )
 }
@@ -74,6 +86,9 @@ const PersonForm: React.FC<Props> = ({ person, onSubmit }) => {
 
   const pushToProjectsRef = useRef<((obj: any) => void) | undefined>()
 
+  const companiesResponse = useGetCompaniesQuery()
+  const companies = companiesResponse.data || []
+
   return (
     <Formik
       initialValues={person}
@@ -90,7 +105,7 @@ const PersonForm: React.FC<Props> = ({ person, onSubmit }) => {
 
             <Field as={StatusSelect} name="status" />
 
-            <Field as={TextField} name="externalCompany" label={t('persons.externalCompany')} />
+            <Field as={CompaniesSelect} name="externalCompanyId" label={t('persons.externalCompany')} companies={companies} />
 
             <ProjectsHeader>
               <Label>{t('persons.projects')}</Label>

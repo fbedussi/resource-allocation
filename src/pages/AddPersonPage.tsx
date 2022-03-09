@@ -16,7 +16,6 @@ const emptyPerson: Person = {
 	role: '',
 	projects: [],
 	status: 'incoming',
-	externalCompany: ''
 }
 
 const AddPersonPage: React.FC = () => {
