@@ -8,6 +8,7 @@ export { Fab } from './Fab'
 export { DatePicker } from './DatePicker'
 export { StylesProvider } from '@mui/styles'
 export { DialogTitle } from './DialogTitle'
+export { Checkbox } from './Checkbox'
 
 export const DialogContentBoxed = styled.div`
   width: min(90vw, 400px);

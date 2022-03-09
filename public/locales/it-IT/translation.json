@@ -52,5 +52,17 @@
 		"allocation": "allocazione",
 		"addPersonToProject": "Asseguna uno o più progetti a {{personName}}",
 		"noAvailableProjects": "non mi sono progetti disponibili"
+	},
+	"companies": {
+		"confirmDelete": "sei sicuro di voler cancellare l'azienda {{companyName}}?",
+		"errorDeletingCompany": "non è stato possibile cancellare l'azienda a causa di questo errore: {{errorMessage}}",
+		"companies": "aziende",
+		"errorLoadingCompanies": "errore nel caricamento delle aziende",
+		"addCompany": "aggiungi azienda",
+		"editCompany": "modifica azienda",
+		"companyNotFound": "azienda non trovata",
+		"name": "nome",
+		"contactName": "nome referente",
+		"active": "attiva"
 	}
 }

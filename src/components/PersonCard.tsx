@@ -107,7 +107,7 @@ const PersonCard: React.FC<Props> = ({ personId }) => {
 					{!!person?.externalCompany && <Typography variant="body2">{person?.externalCompany}</Typography>}
 				</CardContent>
 				<Actions>
-					<Link to={`/persons/edit/${personId}`}>
+					<Link to={`/person/edit/${personId}`}>
 						<IconButton size="small">
 							<EditIcon />
 						</IconButton>

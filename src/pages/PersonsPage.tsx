@@ -45,7 +45,7 @@ const PersonsPage: React.FC = () => {
 				))}
 			</Persons>
 
-			<Fab color="primary" onClick={() => navigate('/persons/add')}>
+			<Fab color="primary" onClick={() => navigate('/person/add')}>
 				<AddIcon />
 			</Fab>
 		</>

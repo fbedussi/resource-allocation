@@ -26,6 +26,7 @@ const HomePage: React.FC = () => {
       >
         <Button><Link to="/projects">{t('projects.projects')}</Link></Button>
         <Button><Link to="/persons">{t('persons.persons')}</Link></Button>
+        <Button><Link to="/companies">{t('companies.companies')}</Link></Button>
       </ButtonGroup>
     </Wrapper>
   )
